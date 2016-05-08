@@ -1,6 +1,7 @@
 # meetup-akka-java
 
 **Sample App with Akka actors and persistence module.**
+
 1. Generate Stock Exchange Order
 
 2. Send it to OrderProcessor actor
