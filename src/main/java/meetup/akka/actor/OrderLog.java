@@ -10,12 +10,12 @@ import meetup.akka.om.Order;
 
 import java.util.Random;
 
-public class Persistence extends UntypedActor {
+public class OrderLog extends UntypedActor {
   private LoggingAdapter log = Logging.getLogger(getContext().system(), this);
   private OrderDao orderDao;
   private Random random = new Random();
 
-  public Persistence(OrderDao orderDao) {
+  public OrderLog(OrderDao orderDao) {
     this.orderDao = orderDao;
   }
 
@@ -29,7 +29,7 @@ public class Persistence extends UntypedActor {
       Order order = new Order(preparedOrder.orderId, preparedOrder.order);
       orderDao.saveOrder(order);
       log.info("order saved = {}", order);
-      sender().tell(new PersistedOrder(preparedOrderForAck.deliveryId, order), self());
+      sender().tell(new LoggedOrder(preparedOrderForAck.deliveryId, order), self());
 
     } else if (message instanceof CompleteBatch) {
       orderDao.completeBatch(10);
@@ -47,11 +47,11 @@ public class Persistence extends UntypedActor {
   }
 }
 
-class PersistedOrder {
+class LoggedOrder {
   public final long deliveryId;
   public final Order order;
 
-  public PersistedOrder(long deliveryId, Order order) {
+  public LoggedOrder(long deliveryId, Order order) {
     this.deliveryId = deliveryId;
     this.order = order;
   }
