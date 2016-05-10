@@ -23,6 +23,7 @@ public class App {
       int orders = 10;
       placeOrders(orders, context);
       checkOrdersInStorage(orders, context);
+      completeBatch(context);
     } finally {
       context.getBean(ActorSystem.class).shutdown();
     }
@@ -44,5 +45,11 @@ public class App {
   private static void placeOrders(int orders, ApplicationContext context) throws InterruptedException {
     OrderGateway orderGateway = context.getBean(OrderGateway.class);
     IntStream.range(0, orders).parallel().forEach(i -> orderGateway.placeOrder());
+  }
+
+  private static void completeBatch(ApplicationContext context) throws InterruptedException {
+    OrderGateway orderGateway = context.getBean(OrderGateway.class);
+    orderGateway.completeBatch();
+    Thread.sleep(5_000);
   }
 }

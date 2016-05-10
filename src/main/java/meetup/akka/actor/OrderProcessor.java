@@ -10,6 +10,7 @@ import akka.persistence.UntypedPersistentActorWithAtLeastOnceDelivery;
 import akka.routing.RoundRobinPool;
 import com.google.common.base.MoreObjects;
 import meetup.akka.dal.OrderDao;
+import meetup.akka.om.CompleteBatch;
 import meetup.akka.om.NewOrder;
 
 public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDelivery {
@@ -44,6 +45,10 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
     } else if (msg instanceof PersistedOrder) {
       log.info("Persistence confirmation received for order: {}", msg);
       updateState(msg);
+
+    } else if (msg instanceof CompleteBatch) {
+      log.info("Going to complete batch.");
+      getContext().actorSelection(persistence).tell(msg, self());
 
     } else {
       unhandled(msg);

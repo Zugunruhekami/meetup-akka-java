@@ -1,6 +1,8 @@
 package meetup.akka.om;
 
-public class NewOrder {
+import java.io.Serializable;
+
+public class NewOrder implements Serializable {
   public final Order order;
 
   public NewOrder(Order order) {

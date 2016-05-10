@@ -5,6 +5,7 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.google.common.base.MoreObjects;
 import meetup.akka.dal.OrderDao;
+import meetup.akka.om.CompleteBatch;
 import meetup.akka.om.Order;
 
 import java.util.Random;
@@ -29,6 +30,10 @@ public class Persistence extends UntypedActor {
       orderDao.saveOrder(order);
       log.info("order saved = {}", order);
       sender().tell(new PersistedOrder(preparedOrderForAck.deliveryId, order), self());
+
+    } else if (message instanceof CompleteBatch) {
+      orderDao.completeBatch(10);
+      log.info("Batch completed.");
 
     } else {
       unhandled(message);
