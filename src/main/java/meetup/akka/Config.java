@@ -24,7 +24,7 @@ public class Config {
   public DataSource dataSource() {
     PooledDataSource dataSource = new PooledDataSource();
     dataSource.setDriver("com.mysql.jdbc.Driver");
-    dataSource.setUrl("jdbc:mysql://192.168.99.101:3306/somedb?autoReconnect=true&useSSL=false");
+    dataSource.setUrl("jdbc:mysql://192.168.99.100:3306/somedb?autoReconnect=true&useSSL=false");
     dataSource.setUsername("root");
     dataSource.setPassword("root");
     dataSource.setPoolMaximumActiveConnections(5);
