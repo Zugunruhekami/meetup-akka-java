@@ -45,6 +45,7 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
     } else if (msg instanceof LoggedOrder) {
       log.info("Logging confirmation received for order: {}", msg);
       updateState(msg);
+      log.info("Delivery confirmed for order = {}", msg);
 
     } else if (msg instanceof CompleteBatch) {
       log.info("Going to complete batch.");

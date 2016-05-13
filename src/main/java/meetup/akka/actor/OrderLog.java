@@ -24,10 +24,13 @@ public class OrderLog extends UntypedActor {
     if (message instanceof PreparedOrderForAck) {
       randomFail(message);
 
+      log.info("order to be persisted = {}", message);
+
       PreparedOrderForAck preparedOrderForAck = (PreparedOrderForAck) message;
       PreparedOrder preparedOrder = preparedOrderForAck.preparedOrder;
       Order order = new Order(preparedOrder.orderId, preparedOrder.order);
       orderDao.saveOrder(order);
+
       log.info("order saved = {}", order);
       sender().tell(new LoggedOrder(preparedOrderForAck.deliveryId, order), self());
 

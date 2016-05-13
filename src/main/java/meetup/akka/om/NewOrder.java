@@ -1,5 +1,7 @@
 package meetup.akka.om;
 
+import com.google.common.base.MoreObjects;
+
 import java.io.Serializable;
 
 public class NewOrder implements Serializable {
@@ -7,5 +9,12 @@ public class NewOrder implements Serializable {
 
   public NewOrder(Order order) {
     this.order = order;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).omitNullValues()
+            .add("order", order)
+            .toString();
   }
 }
