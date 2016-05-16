@@ -10,12 +10,12 @@ import meetup.akka.om.Order;
 
 import java.util.Random;
 
-public class OrderLog extends UntypedActor {
+public class OrderLogger extends UntypedActor {
   private LoggingAdapter log = Logging.getLogger(getContext().system(), this);
   private OrderDao orderDao;
   private Random random = new Random();
 
-  public OrderLog(OrderDao orderDao) {
+  public OrderLogger(OrderDao orderDao) {
     this.orderDao = orderDao;
   }
 

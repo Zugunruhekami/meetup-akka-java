@@ -22,7 +22,7 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
   public OrderProcessor(OrderDao orderDao) {
     orderIdGenerator = getContext().actorOf(Props.create(OrderIdGenerator.class), "orderIdGenerator");
     persistence = getContext()
-            .actorOf(new RoundRobinPool(PERSISTENCE_ACTORS).props(Props.create(OrderLog.class, orderDao)), "persistence")
+            .actorOf(new RoundRobinPool(PERSISTENCE_ACTORS).props(Props.create(OrderLogger.class, orderDao)), "persistence")
             .path();
   }
 
@@ -58,7 +58,7 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
 
   private void updateState(Object event) {
     if (event instanceof PreparedOrder) {
-      deliver(persistence, (Function<Long, Object>) deliveryId -> new PreparedOrderForAck(deliveryId, (PreparedOrder)event));
+      deliver(persistence, (Function<Long, Object>) deliveryId -> new PreparedOrderForAck(deliveryId, (PreparedOrder) event));
     } else if (event instanceof LoggedOrder) {
       confirmDelivery(((LoggedOrder) event).deliveryId);
     }
