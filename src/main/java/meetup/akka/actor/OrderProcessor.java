@@ -28,14 +28,14 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
 
   @Override
   public void onReceiveRecover(Object msg) throws Exception {
-    updateState(msg);
+    generateOrderId(msg);
   }
 
   @Override
   public void onReceiveCommand(Object msg) throws Exception {
     if (msg instanceof NewOrder) {
       log.info("New order received. Going to generate an id: {}", msg);
-      orderIdGenerator.tell(((NewOrder) msg).order, self());
+      persist(msg, this::generateOrderId);
 
     } else if (msg instanceof PreparedOrder) {
       PreparedOrder preparedOrder = (PreparedOrder) msg;
@@ -53,6 +53,12 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
 
     } else {
       unhandled(msg);
+    }
+  }
+
+  private void generateOrderId(Object event) {
+    if (event instanceof NewOrder) {
+      orderIdGenerator.tell(((NewOrder) event).order, self());
     }
   }
 

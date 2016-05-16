@@ -12,7 +12,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
-import javax.inject.Named;
 import javax.sql.DataSource;
 
 @ComponentScan
@@ -66,17 +65,4 @@ public class Config {
   public ActorSystem actorSystem() {
     return ActorSystem.create("AkkaJavaSpring");
   }
-
-  @Bean
-  @Named("Recovery")
-  public boolean recovery() {
-    return false;
-  }
-
-  @Bean
-  @Named("PersistenceRandomFail")
-  public boolean randomFail() {
-    return false;
-  }
-
 }
