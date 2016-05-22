@@ -16,13 +16,13 @@ import meetup.akka.om.NewOrder;
 public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDelivery {
   private static final int PERSISTENCE_ACTORS = 5;
   private final ActorRef orderIdGenerator;
-  private final ActorPath persistence;
+  private final ActorPath orderLogger;
   private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
   public OrderProcessor(OrderDao orderDao) {
     orderIdGenerator = getContext().actorOf(Props.create(OrderIdGenerator.class), "orderIdGenerator");
-    persistence = getContext()
-            .actorOf(new RoundRobinPool(PERSISTENCE_ACTORS).props(Props.create(OrderLogger.class, orderDao)), "persistence")
+    orderLogger = getContext()
+            .actorOf(new RoundRobinPool(PERSISTENCE_ACTORS).props(Props.create(OrderLogger.class, orderDao)), "orderLogger")
             .path();
   }
 
@@ -49,7 +49,7 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
 
     } else if (msg instanceof CompleteBatch) {
       log.info("Going to complete batch.");
-      getContext().actorSelection(persistence).tell(msg, self());
+      getContext().actorSelection(orderLogger).tell(msg, self());
 
     } else {
       unhandled(msg);
@@ -64,7 +64,7 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
 
   private void updateState(Object event) {
     if (event instanceof PreparedOrder) {
-      deliver(persistence, (Function<Long, Object>) deliveryId -> new PreparedOrderForAck(deliveryId, (PreparedOrder) event));
+      deliver(orderLogger, (Function<Long, Object>) deliveryId -> new PreparedOrderForAck(deliveryId, (PreparedOrder) event));
     } else if (event instanceof LoggedOrder) {
       confirmDelivery(((LoggedOrder) event).deliveryId);
     }
