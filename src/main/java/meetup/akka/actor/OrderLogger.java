@@ -1,44 +1,18 @@
 package meetup.akka.actor;
 
-import akka.actor.UntypedActor;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
 import com.google.common.base.MoreObjects;
 import meetup.akka.dal.OrderDao;
-import meetup.akka.om.CompleteBatch;
 import meetup.akka.om.Order;
 
 import java.util.Random;
 
-class OrderLogger extends UntypedActor {
-  private LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+class OrderLogger {
+  //private LoggingAdapter log = Logging.getLogger(getContext().system(), this);
   private OrderDao orderDao;
   private Random random = new Random();
 
   public OrderLogger(OrderDao orderDao) {
     this.orderDao = orderDao;
-  }
-
-  @Override
-  public void onReceive(Object message) throws Exception {
-    if (message instanceof PreparedOrderForAck) {
-      randomFail(message);
-      log.info("order to be persisted = {}", message);
-      PreparedOrderForAck preparedOrderForAck = (PreparedOrderForAck) message;
-      PreparedOrder preparedOrder = preparedOrderForAck.preparedOrder;
-      Order order = new Order(preparedOrder.orderId, preparedOrder.order);
-      orderDao.saveOrder(order);
-
-      log.info("order saved = {}", order);
-      sender().tell(new LoggedOrder(preparedOrderForAck.deliveryId, order), self());
-
-    } else if (message instanceof CompleteBatch) {
-      orderDao.completeBatch(10);
-      log.info("Batch completed.");
-
-    } else {
-      unhandled(message);
-    }
   }
 
   private void randomFail(Object message) {

@@ -1,22 +1,12 @@
 package meetup.akka.actor;
 
-import akka.actor.UntypedActor;
 import com.google.common.base.MoreObjects;
 import meetup.akka.om.Order;
 
 import java.io.Serializable;
 
-class OrderIdGenerator extends UntypedActor {
-  private long seqNo;
+class OrderIdGenerator {
 
-  @Override
-  public void onReceive(Object message) throws Exception {
-    if (message instanceof Order) {
-      sender().tell(new PreparedOrder((Order) message, ++seqNo), self());
-    } else {
-      unhandled(message);
-    }
-  }
 }
 
 class PreparedOrder implements Serializable {

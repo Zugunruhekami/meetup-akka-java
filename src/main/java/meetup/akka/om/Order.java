@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public final class Order implements Serializable {
-
   private long orderId = -1;
   private LocalDateTime executionDate;
   private OrderType orderType;
