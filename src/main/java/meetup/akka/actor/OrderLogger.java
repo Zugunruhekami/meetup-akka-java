@@ -10,7 +10,7 @@ import meetup.akka.om.Order;
 
 import java.util.Random;
 
-public class OrderLogger extends UntypedActor {
+class OrderLogger extends UntypedActor {
   private LoggingAdapter log = Logging.getLogger(getContext().system(), this);
   private OrderDao orderDao;
   private Random random = new Random();
@@ -23,9 +23,7 @@ public class OrderLogger extends UntypedActor {
   public void onReceive(Object message) throws Exception {
     if (message instanceof PreparedOrderForAck) {
       randomFail(message);
-
       log.info("order to be persisted = {}", message);
-
       PreparedOrderForAck preparedOrderForAck = (PreparedOrderForAck) message;
       PreparedOrder preparedOrder = preparedOrderForAck.preparedOrder;
       Order order = new Order(preparedOrder.orderId, preparedOrder.order);

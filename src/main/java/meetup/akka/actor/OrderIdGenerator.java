@@ -6,7 +6,7 @@ import meetup.akka.om.Order;
 
 import java.io.Serializable;
 
-public class OrderIdGenerator extends UntypedActor {
+class OrderIdGenerator extends UntypedActor {
   private long seqNo;
 
   @Override

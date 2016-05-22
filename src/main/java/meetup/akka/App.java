@@ -29,22 +29,22 @@ public class App {
     }
   }
 
-  private static void checkOrdersInStorage(int orders, ApplicationContext context) throws InterruptedException {
-    OrderDao orderDao = context.getBean(OrderDao.class);
-    List<Order> orderList = orderDao.getOrders();
-
-    while (orderList.size() < orders) {
-      Thread.sleep(2_000);
-      orderList = orderDao.getOrders();
-    }
-
-    System.out.println("\nOrders are in storage: ");
-    orderList.forEach(System.out::println);
-  }
-
   private static void placeOrders(int orders, ApplicationContext context) throws InterruptedException {
     OrderGateway orderGateway = context.getBean(OrderGateway.class);
     IntStream.range(0, orders).parallel().forEach(i -> orderGateway.placeOrder());
+  }
+
+  private static void checkOrdersInStorage(int expectedOrders, ApplicationContext context) throws InterruptedException {
+    OrderDao orderDao = context.getBean(OrderDao.class);
+    List<Order> orders = orderDao.getOrders();
+
+    while (orders.size() < expectedOrders) {
+      Thread.sleep(2_000);
+      orders = orderDao.getOrders();
+    }
+
+    System.out.println("\nOrders are in storage: ");
+    orders.forEach(System.out::println);
   }
 
   private static void completeBatch(ApplicationContext context) throws InterruptedException {
