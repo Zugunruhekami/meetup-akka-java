@@ -1,13 +1,16 @@
 package meetup.akka.actor;
 
+import akka.actor.UntypedActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
 import com.google.common.base.MoreObjects;
 import meetup.akka.dal.OrderDao;
 import meetup.akka.om.Order;
 
 import java.util.Random;
 
-class OrderLogger {
-  //private LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+class OrderLogger extends UntypedActor {
+  private LoggingAdapter log = Logging.getLogger(getContext().system(), this);
   private OrderDao orderDao;
   private Random random = new Random();
 
@@ -19,6 +22,22 @@ class OrderLogger {
     random.ints(1).filter(i -> i % 2 == 0).forEach(i -> {
       throw new RuntimeException("random fail on message: " + message);
     });
+  }
+
+  @Override
+  public void onReceive(Object message) throws Exception {
+    if (message instanceof PreparedOrderForAck) {
+      log.info("Received PreparedOrderForAck = {}", message);
+
+      randomFail(message);
+
+      PreparedOrderForAck preparedOrderForAck = (PreparedOrderForAck) message;
+      Order order = new Order(preparedOrderForAck.preparedOrder.orderId, preparedOrderForAck.preparedOrder.order);
+      orderDao.saveOrder(order);
+
+      sender().tell(new LoggedOrder(preparedOrderForAck.deliveryId, order), self());
+      log.info("");
+    }
   }
 }
 

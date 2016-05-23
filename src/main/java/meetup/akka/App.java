@@ -20,7 +20,7 @@ public class App {
     ConfigurableApplicationContext context = app.run(args);
 
     try {
-      int orders = 10;
+      int orders = 100;
       placeOrders(orders, context);
       checkOrdersInStorage(orders, context);
       completeBatch(context);
@@ -49,7 +49,7 @@ public class App {
 
   private static void completeBatch(ApplicationContext context) throws InterruptedException {
     OrderGateway orderGateway = context.getBean(OrderGateway.class);
-    orderGateway.completeBatch();
+    orderGateway.completeBatch(10);
     Thread.sleep(5_000);
   }
 }
