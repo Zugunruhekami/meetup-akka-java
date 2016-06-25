@@ -14,8 +14,8 @@ import meetup.akka.om.NewOrder;
 public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDelivery {
   private static final int NUMBER_OF_LOGGERS = 5;
   private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
-  private ActorRef orderIdGenerator;
-  private ActorPath orderLogger;
+  private final ActorRef orderIdGenerator;
+  private final ActorPath orderLogger;
 
   public OrderProcessor(OrderDao orderDao) {
     orderIdGenerator = context().actorOf(Props.create(OrderIdGenerator.class), "orderIdGenerator");

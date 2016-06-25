@@ -30,7 +30,7 @@ public class App {
     }
   }
 
-  private static void placeOrders(int orders, ApplicationContext context) throws InterruptedException {
+  private static void placeOrders(int orders, ApplicationContext context) {
     OrderGateway orderGateway = context.getBean(OrderGateway.class);
     IntStream.range(0, orders).parallel().forEach(i -> orderGateway.placeOrder());
   }

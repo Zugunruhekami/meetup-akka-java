@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 
 public final class Order implements Serializable {
   private long orderId = -1;
-  private LocalDateTime executionDate;
-  private OrderType orderType;
-  private BigDecimal executionPrice;
-  private String symbol;
-  private int userId;
-  private int quantity;
+  private final LocalDateTime executionDate;
+  private final OrderType orderType;
+  private final BigDecimal executionPrice;
+  private final String symbol;
+  private final int userId;
+  private final int quantity;
 
   public Order(OrderType orderType, BigDecimal executionPrice, String symbol, int userId, int quantity) {
     this(-1L, null, orderType, executionPrice, symbol, userId, quantity);

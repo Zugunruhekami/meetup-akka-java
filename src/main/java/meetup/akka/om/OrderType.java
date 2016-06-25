@@ -22,10 +22,6 @@ public enum OrderType {
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public static OrderType getEnum(String name) {
     return enums.get(name);
   }

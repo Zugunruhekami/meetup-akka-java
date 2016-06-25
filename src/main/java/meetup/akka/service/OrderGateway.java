@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 @Service
 public class OrderGateway {
-  private ActorSystem system;
+  private final ActorSystem system;
   private ActorRef orderProcessor;
 
   @Inject
