@@ -12,9 +12,8 @@ import meetup.akka.dal.OrderDao;
 import meetup.akka.om.NewOrder;
 
 public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDelivery {
-  private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
-
   private static final int NUMBER_OF_LOGGERS = 5;
+  private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
   private ActorRef orderIdGenerator;
   private ActorPath orderLogger;
 
@@ -51,6 +50,7 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
   @Override
   public void onReceiveCommand(Object msg) throws Exception {
     if (msg instanceof NewOrder) {
+      persist(msg, this::generateOrderId);
       generateOrderId(msg);
 
     } else if (msg instanceof PreparedOrder) {
@@ -58,12 +58,14 @@ public class OrderProcessor extends UntypedPersistentActorWithAtLeastOnceDeliver
       persist(msg, this::updateState);
 
     } else if (msg instanceof LoggedOrder) {
-      confirmDelivery(((LoggedOrder) msg).deliveryId);
+      LoggedOrder loggedOrder = (LoggedOrder) msg;
+      confirmDelivery(loggedOrder.deliveryId);
       log.info("LoggedOrder received = {}", msg);
 
     } else {
       unhandled(msg);
     }
+
   }
 
   @Override
